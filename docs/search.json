@@ -1,0 +1,23 @@
+[
+  {
+    "objectID": "control_flow_practice.html",
+    "href": "control_flow_practice.html",
+    "title": "HW 3: Control Flow Practice",
+    "section": "",
+    "text": "Load data\nload(\"hw2_list.rda\")"
+  },
+  {
+    "objectID": "control_flow_practice.html#task-1-control-flow-practice",
+    "href": "control_flow_practice.html#task-1-control-flow-practice",
+    "title": "HW 3: Control Flow Practice",
+    "section": "Task 1: Control Flow Practice",
+    "text": "Task 1: Control Flow Practice\ncreate a new column in each data frame from above called status\n\nbp_list[['treatment']]$status &lt;- character(20)\n\nbp_list[['placebo']]$status &lt;- character(10)\n\nCreate ‘status’ column values for treatment data frame\n\nfor (i in 1:nrow(bp_list[['treatment']])) {\n  bp &lt;- bp_list[['treatment']]$post_bp[i]\n  \n  if (bp &lt;= 120) {\n    bp_list[['treatment']]$status[i] &lt;- 'optimal'\n  }\n  \n  if (bp &gt; 130) {\n    bp_list[['treatment']]$status[i] &lt;- 'high'\n  }\n  \n  else {\n    bp_list[['treatment']]$status[i] &lt;- 'borderline'\n  }\n}\n\nCreate ‘status’ column values for placebo data frame\n\nfor (i in 1:nrow(bp_list[['placebo']])) {\n  bp &lt;- bp_list[['placebo']]$post_bp[i]\n  \n  if (bp &lt;= 120) {\n    bp_list[['placebo']]$status[i] &lt;- 'optimal'\n  }\n  \n  if (bp &gt; 130) {\n    bp_list[['placebo']]$status[i] &lt;- 'high'\n  }\n  \n  else {\n    bp_list[['placebo']]$status[i] &lt;- 'borderline'\n  }\n}"
+  },
+  {
+    "objectID": "control_flow_practice.html#task-2-function-writing",
+    "href": "control_flow_practice.html#task-2-function-writing",
+    "title": "HW 3: Control Flow Practice",
+    "section": "Task 2: Function Writing",
+    "text": "Task 2: Function Writing\n\nsummary_stats &lt;- function(list, stat = 'mean') {\n  my_fun &lt;- get(stat)\n  \n  # apply my_fun to pre, post, and diff bp of each list\n  trt_stats &lt;- sapply(list[['treatment']][, c('pre_bp', 'post_bp', 'diff_bp')], my_fun)\n  placebo_stats &lt;- sapply(list[['placebo']][, c('pre_bp', 'post_bp', 'diff_bp')], my_fun)\n  \n  # combine results\n  results &lt;- c(trt_stats, placebo_stats)\n  \n  # dynamically name the results\n  names(results) &lt;- c(\n    paste0('treatment_', names(trt_stats), '_', stat),\n    paste0('placebo_', names(placebo_stats), '_', stat)\n  )\n  \n  return(results)\n}\n\nTest out the function without specifying the statistic\n\nsummary_stats(bp_list)\n\n treatment_pre_bp_mean treatment_post_bp_mean treatment_diff_bp_mean \n                131.60                 125.95                   5.65 \n   placebo_pre_bp_mean   placebo_post_bp_mean   placebo_diff_bp_mean \n                131.90                 128.90                   3.00 \n\n\nTest the function with different statistics\n\nsummary_stats(bp_list, stat = 'var')\n\n treatment_pre_bp_var treatment_post_bp_var treatment_diff_bp_var \n             75.72632              78.99737             117.81842 \n   placebo_pre_bp_var   placebo_post_bp_var   placebo_diff_bp_var \n            149.87778             124.98889             341.33333 \n\nsummary_stats(bp_list, stat = 'sd')\n\n treatment_pre_bp_sd treatment_post_bp_sd treatment_diff_bp_sd \n            8.702087             8.888046            10.854419 \n   placebo_pre_bp_sd   placebo_post_bp_sd   placebo_diff_bp_sd \n           12.242458            11.179843            18.475209 \n\nsummary_stats(bp_list, stat = 'min')\n\n treatment_pre_bp_min treatment_post_bp_min treatment_diff_bp_min \n                  115                   114                   -24 \n   placebo_pre_bp_min   placebo_post_bp_min   placebo_diff_bp_min \n                  114                   105                   -21 \n\nsummary_stats(bp_list, stat = 'max')\n\n treatment_pre_bp_max treatment_post_bp_max treatment_diff_bp_max \n                  151                   146                    21 \n   placebo_pre_bp_max   placebo_post_bp_max   placebo_diff_bp_max \n                  152                   143                    33"
+  }
+]

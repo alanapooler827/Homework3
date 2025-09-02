@@ -1,0 +1,97 @@
+---
+title: "HW 3: Control Flow Practice"
+author: "Alana Pooler"
+format: html
+---
+
+Load data
+```{r}
+load("hw2_list.rda")
+```
+
+
+## Task 1: Control Flow Practice
+
+create a new column in each data frame from above called status
+```{r}
+bp_list[['treatment']]$status <- character(20)
+
+bp_list[['placebo']]$status <- character(10)
+```
+
+Create 'status' column values for treatment data frame
+```{r}
+for (i in 1:nrow(bp_list[['treatment']])) {
+  bp <- bp_list[['treatment']]$post_bp[i]
+  
+  if (bp <= 120) {
+    bp_list[['treatment']]$status[i] <- 'optimal'
+  }
+  
+  if (bp > 130) {
+    bp_list[['treatment']]$status[i] <- 'high'
+  }
+  
+  else {
+    bp_list[['treatment']]$status[i] <- 'borderline'
+  }
+}
+```
+
+Create 'status' column values for placebo data frame
+```{r}
+for (i in 1:nrow(bp_list[['placebo']])) {
+  bp <- bp_list[['placebo']]$post_bp[i]
+  
+  if (bp <= 120) {
+    bp_list[['placebo']]$status[i] <- 'optimal'
+  }
+  
+  if (bp > 130) {
+    bp_list[['placebo']]$status[i] <- 'high'
+  }
+  
+  else {
+    bp_list[['placebo']]$status[i] <- 'borderline'
+  }
+}
+```
+
+
+## Task 2: Function Writing
+```{r}
+summary_stats <- function(list, stat = 'mean') {
+  my_fun <- get(stat)
+  
+  # apply my_fun to pre, post, and diff bp of each list
+  trt_stats <- sapply(list[['treatment']][, c('pre_bp', 'post_bp', 'diff_bp')], my_fun)
+  placebo_stats <- sapply(list[['placebo']][, c('pre_bp', 'post_bp', 'diff_bp')], my_fun)
+  
+  # combine results
+  results <- c(trt_stats, placebo_stats)
+  
+  # dynamically name the results
+  names(results) <- c(
+    paste0('treatment_', names(trt_stats), '_', stat),
+    paste0('placebo_', names(placebo_stats), '_', stat)
+  )
+  
+  return(results)
+}
+```
+
+
+Test out the function without specifying the statistic
+```{r}
+summary_stats(bp_list)
+```
+Test the function with different statistics
+```{r}
+summary_stats(bp_list, stat = 'var')
+
+summary_stats(bp_list, stat = 'sd')
+
+summary_stats(bp_list, stat = 'min')
+
+summary_stats(bp_list, stat = 'max')
+```
